@@ -7,12 +7,39 @@
 
 Welcome to your new app.
 
+<p>
+    <button @onclick="SaveTask">
+        Save Task
+    </button>
+</p>
+<p>
+    @if (savedTask != null)
+    {
+        <p>Task saved!</p>
+        <p>
+            <strong>Id:</strong> @savedTask.Id
 
+        </p>
+        <p>
+            @savedTask.Name
+        </p>
+    }
+</p>
 @code {
 
+    TaskDto? savedTask;
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine("Hello, world!");
         Console.WriteLine(BackendHttpClient.httpClient.BaseAddress);
+    }
+
+    private async Task SaveTask()
+    {
+        var newTask = new TaskDto { Name = "Task 1" };
+        var response = await BackendHttpClient.httpClient.PostAsJsonAsync("api/tasks", newTask);
+        response.EnsureSuccessStatusCode();
+        savedTask = await response.Content.ReadFromJsonAsync<TaskDto>();
+
     }
 }

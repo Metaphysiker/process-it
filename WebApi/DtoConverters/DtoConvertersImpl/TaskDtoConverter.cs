@@ -2,15 +2,33 @@ namespace WebApi.DtoConverters.DtoConvertersImpl;
 
 public class TaskDtoConverter : IDtoConverter<TaskDto, Task>
 {
-    public TaskDto ConvertToDto(Task model)
+    private readonly AutoMapperService _autoMapperService;
+
+    public TaskDtoConverter(AutoMapperService autoMapperService)
     {
-        TaskDto dto = new TaskDto();
-        dto.Id = model.Id;
+        _autoMapperService = autoMapperService;
+    }
+    public TaskDto Convert(Task model)
+    {
+        var dto = _autoMapperService.mapper.Map<TaskDto>(model);
         return dto;
     }
 
-    public Task ConvertToModel(TaskDto dto)
+    public IEnumerable<TaskDto> Convert(IEnumerable<Task> models)
     {
-        throw new NotImplementedException();
+        var dtos = models.Select(model => _autoMapperService.mapper.Map<TaskDto>(model));
+        return dtos;
+    }
+
+    public Task Convert(TaskDto dto)
+    {
+        var model = _autoMapperService.mapper.Map<Task>(dto);
+        return model;
+    }
+
+    public IEnumerable<Task> Convert(IEnumerable<TaskDto> dtos)
+    {
+        var models = dtos.Select(dto => _autoMapperService.mapper.Map<Task>(dto));
+        return models;
     }
 }

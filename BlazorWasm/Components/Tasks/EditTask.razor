@@ -1,0 +1,70 @@
+@page "/new-task"
+@inject BackendHttpClient BackendHttpClient
+
+@inject ILogger<TaskDto> Logger
+
+<h1>Starfleet Starship Database</h1>
+
+<h2>New Ship Entry Form</h2>
+
+<EditForm Model="Model" OnValidSubmit="Submit" FormName="Task">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label>
+            Identifier:
+            <InputNumber @bind-Value="Model!.Id" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Description (optional):
+            <InputTextArea @bind-Value="Model!.Description" />
+        </label>
+    </div>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+    <div>
+        <p>
+            @if (savedTask != null)
+            {
+            <p>Task saved!</p>
+            <p>
+                <strong>Id:</strong> @savedTask.Id
+
+            </p>
+            <p>
+                @savedTask.Name
+            </p>
+        }
+        </p>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private TaskDto? Model { get; set; }
+
+    private TaskDto? savedTask;
+
+    protected override void OnInitialized() =>
+    Model ??= new();
+
+    private async Task Submit()
+    {
+        Logger.LogInformation("New ship entry submitted: {Model}", Model);
+        await SaveTask();
+    }
+
+    private async Task SaveTask()
+    {
+        Console.WriteLine("Save Task");
+        var newTask = new TaskDto { Name = "Task 1" };
+        var response = await BackendHttpClient.httpClient.PostAsJsonAsync("api/tasks", Model);
+        response.EnsureSuccessStatusCode();
+
+        savedTask = await response.Content.ReadFromJsonAsync<TaskDto>();
+
+    }
+}

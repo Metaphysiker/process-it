@@ -1,38 +1,60 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Controllers;
-
+using WebApi.Factories;
 
 [ApiController]
 [Route("api/[controller]")]
 public class TasksController : ControllerBase, IModelController<TaskDto, TaskSearch>
 {
-    public Task<ActionResult<TaskDto>> Create([FromBody] TaskDto dto)
+    private readonly ModelServiceFactory _modelServiceFactory;
+    private IModelService<Task, TaskDto, TaskSearch> _service;
+    public TasksController(ModelServiceFactory modelServiceFactory)
     {
-        throw new NotImplementedException();
+        _modelServiceFactory = modelServiceFactory;
+        _service = (IModelService<Task, TaskDto, TaskSearch>)_modelServiceFactory.Create(typeof(Task));
     }
 
-    public Task<ActionResult> Delete(int id)
+
+    [HttpPost]
+    async public Task<ActionResult<TaskDto>> Create([FromBody] TaskDto dto)
     {
-        throw new NotImplementedException();
+        var savedModel = await _service.Create(dto);
+        return Ok(savedModel);
     }
 
-    public Task<ActionResult<TaskDto>> Read(int id)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id)
     {
-        throw new NotImplementedException();
+        await _service.Delete(id);
+        return Ok();
     }
 
-    public Task<ActionResult<List<TaskDto>>> ReadAll()
+    [HttpGet("{id}")]
+    public async Task<ActionResult<TaskDto>> Read(int id)
     {
-        throw new NotImplementedException();
+        var dto = await _service.Read(id);
+        return Ok(dto);
     }
 
-    public Task<ActionResult<PaginationDto<TaskDto>>> Search([FromBody] TaskSearch search)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TaskDto>>> ReadAll()
     {
-        throw new NotImplementedException();
+        var dtos = await _service.ReadAll();
+        return Ok(dtos);
     }
 
-    public Task<ActionResult<TaskDto>> Update([FromBody] TaskDto dto)
+    [HttpPost("search")]
+    public async Task<ActionResult<PaginationDto<TaskDto>>> Search([FromBody] TaskSearch search)
     {
-        throw new NotImplementedException();
+        PaginationDto<TaskDto> paginationDto = new PaginationDto<TaskDto>();
+        paginationDto.Data = (List<TaskDto>)await _service.Search(search);
+        return Ok(paginationDto);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<TaskDto>> Update([FromBody] TaskDto dto)
+    {
+        var updatedModel = await _service.Update(dto);
+        return Ok(updatedModel);
     }
 }

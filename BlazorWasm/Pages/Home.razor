@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject BackendHttpClient BackendHttpClient
+@inject Currenty Currenty
 
 <PageTitle>Home</PageTitle>
 
@@ -7,6 +8,7 @@
 
 Welcome to your new app.
 
+<button class="btn btn-primary" @onclick="changeCurrenty">Click me</button>
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -14,4 +16,11 @@ Welcome to your new app.
         Console.WriteLine("Hello, world!");
         Console.WriteLine(BackendHttpClient.httpClient.BaseAddress);
     }
+
+    private async void changeCurrenty()
+    {
+        Currenty.Name = "lolololol";
+        Currenty.NotifyStateChanged();
+    }
+
 }

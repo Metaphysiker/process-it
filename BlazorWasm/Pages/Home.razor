@@ -1,0 +1,17 @@
+﻿@page "/"
+@inject BackendHttpClient BackendHttpClient
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("Hello, world!");
+        Console.WriteLine(BackendHttpClient.httpClient.BaseAddress);
+    }
+}

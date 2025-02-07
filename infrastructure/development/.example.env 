@@ -1,0 +1,6 @@
+PORT_FRONTEND=8080
+PORT_BACKEND=8081
+API_BASE_URL=http://localhost:8081/
+POSTGRES_PASSWORD=process-it-56hb1
+POSTGRES_USER=process-it-user
+POSTGRES_DB=process-it-db

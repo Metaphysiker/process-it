@@ -1,0 +1,40 @@
+name: process-it-development
+services:
+  webapi:
+    build:
+      context: ../../WebApi
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT_BACKEND}:8080"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+  blazorwasm:
+    build:
+      #context: ../../BlazorWasm
+      context: ../../
+      dockerfile: ./BlazorWasm/Dockerfile
+      args:
+        API_BASE_URL: "${API_BASE_URL}"
+    ports:
+      - "${PORT_FRONTEND}:80"
+    env_file:
+      - .env
+    depends_on:
+      - webapi
+  dotnet:
+    build: ../../tools/dotnet
+    volumes:
+      - ../../:/app
+    env_file:
+      - .env
+  postgres:
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

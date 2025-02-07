@@ -2,8 +2,8 @@ name: process-it-development
 services:
   webapi:
     build:
-      context: ../../WebApi
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: ./WebApi/Dockerfile
     ports:
       - "${PORT_BACKEND}:8080"
     env_file:
@@ -12,7 +12,6 @@ services:
       - postgres
   blazorwasm:
     build:
-      #context: ../../BlazorWasm
       context: ../../
       dockerfile: ./BlazorWasm/Dockerfile
       args:

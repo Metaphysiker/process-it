@@ -10,5 +10,5 @@ public interface IModelController<Dto, SearchT> where Dto : IModelDto where Sear
     public Task<ActionResult<Dto>> Create([FromBody] Dto dto);
     public Task<ActionResult<Dto>> Update([FromBody] Dto dto);
     public Task<ActionResult> Delete(int id);
-    public Task<ActionResult<PaginationDTO<Dto>>> Search([FromBody] SearchT search);
+    public Task<ActionResult<PaginationDto<Dto>>> Search([FromBody] SearchT search);
 }

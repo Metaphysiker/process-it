@@ -27,12 +27,17 @@ Welcome to your new app.
 </p>
 <div>
     <h2>Tasks</h2>
-    <ul>
+    <div>
         @foreach (var task in tasks)
         {
-            <li>@task.Description</li>
+            <BlazorWasm.Components.Tasks.EditTask Name="Swagulus" TaskDtoInput="task">
+            </BlazorWasm.Components.Tasks.EditTask>
         }
-    </ul>
+    </div>
+</div>
+
+<div>
+    <BlazorWasm.Components.Tasks.EditTask></BlazorWasm.Components.Tasks.EditTask>
 </div>
 @code {
 

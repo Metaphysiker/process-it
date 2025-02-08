@@ -1,4 +1,3 @@
-@page "/new-task"
 @inject BackendHttpClient BackendHttpClient
 
 @inject ILogger<TaskDto> Logger
@@ -42,14 +41,40 @@
     </div>
 </EditForm>
 
+<p>
+    Name: @Name
+</p>
+@if (TaskDtoInput != null)
+{
+    <p>
+        Tasky: @TaskDtoInput.Name <br>
+        Tasky: @TaskDtoInput.Description
+    </p>
+}
+
 @code {
+    [Parameter]
+    public TaskDto? TaskDtoInput { get; set; }
+
+    [Parameter]
+    public string Name { get; set; } = String.Empty;
+
     [SupplyParameterFromForm]
-    private TaskDto? Model { get; set; }
+    public TaskDto? Model { get; set; }
 
     private TaskDto? savedTask;
 
-    protected override void OnInitialized() =>
-    Model ??= new();
+    protected override void OnInitialized()
+    {
+        if (TaskDtoInput != null)
+        {
+            Model = TaskDtoInput;
+        }
+        else
+        {
+            Model = new TaskDto();
+        }
+    }
 
     private async Task Submit()
     {
@@ -59,12 +84,10 @@
 
     private async Task SaveTask()
     {
-        Console.WriteLine("Save Task");
         var newTask = new TaskDto { Name = "Task 1" };
         var response = await BackendHttpClient.httpClient.PostAsJsonAsync("api/tasks", Model);
         response.EnsureSuccessStatusCode();
 
         savedTask = await response.Content.ReadFromJsonAsync<TaskDto>();
-
     }
 }

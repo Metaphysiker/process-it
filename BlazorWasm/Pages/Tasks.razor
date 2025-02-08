@@ -15,23 +15,36 @@ Welcome to your new app.
 <p>
     @if (savedTask != null)
     {
-        <p>Task saved!</p>
-        <p>
-            <strong>Id:</strong> @savedTask.Id
+    <p>Task saved!</p>
+    <p>
+        <strong>Id:</strong> @savedTask.Id
 
-        </p>
-        <p>
-            @savedTask.Name
-        </p>
-    }
+    </p>
+    <p>
+        @savedTask.Name
+    </p>
+}
 </p>
+<div>
+    <h2>Tasks</h2>
+    <ul>
+        @foreach (var task in tasks)
+        {
+            <li>@task.Description</li>
+        }
+    </ul>
+</div>
 @code {
 
+    List<TaskDto> tasks = new List<TaskDto>();
     TaskDto? savedTask;
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine("Hello, world!");
         Console.WriteLine(BackendHttpClient.httpClient.BaseAddress);
+        var response = await BackendHttpClient.httpClient.GetAsync("api/tasks");
+        response.EnsureSuccessStatusCode();
+        tasks = await response.Content.ReadFromJsonAsync<List<TaskDto>>();
     }
 
     private async Task SaveTask()
